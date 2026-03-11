@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import useAuth from '../../utils/useAuth';
 import styles from './chat-style.module.css';
 
-// SCENARIO定義
 const SCENARIO = [
     { key: 'intro', type: 'bot', text: () => '最初に店舗の基本情報を登録をしていただきます！' },
     { key: 'swipe_guide', type: 'bot', text: () => 'こちらの対話形式ではなく、フォーム入力も可能です！ フォーム入力をしたい場合は左にスライドするか、下のボタンで切り替えてください。' },
@@ -69,52 +68,56 @@ const CreateShopChat = () => {
     const router = useRouter();
     const { user, authenticated } = useAuth();
 
-    // ⬇️ これらを追加してね！
     const [suggestedShops, setSuggestedShops] = useState([]);
     const [showSuggestModal, setShowSuggestModal] = useState(false);
 
+    const modalOpenRef = useRef(false);
+    const [pendingTitle, setPendingTitle] = useState("");
+    const searchedTitleRef = useRef("");
+
     const searchExistingShop = async (keyword) => {
-        console.log(`「${keyword}」で検索スタートするよ！`);
+        if (searchedTitleRef.current === keyword) return false;
+        searchedTitleRef.current = keyword;
+
+        modalOpenRef.current = true;
+
         try {
             const res = await fetch(`/api/item/search?q=${encodeURIComponent(keyword)}`);
             if (res.ok) {
                 const data = await res.json();
-                console.log("検索結果が返ってきたよ！", data);
                 if (data.results && data.results.length > 0) {
                     setSuggestedShops(data.results);
-                    setShowSuggestModal(true); // 候補があったらモーダル表示！
+                    modalOpenRef.current = true;
+                    setShowSuggestModal(true);
+                    return true;
                 }
-            } else {
-                console.log("お店は見つからなかったみたい💦");
             }
         } catch (e) {
             console.error(e);
         }
+
+        modalOpenRef.current = false;
+        return false;
     };
 
-    // 候補が選ばれた時に自動入力する処理だよ！
     const handleSelectSuggest = (shop) => {
-        const nextData = { ...formData, title: shop.title };
+        modalOpenRef.current = false;
+        setShowSuggestModal(false);
 
-        // 住所や他の情報を取り出してformDataにセットしていくよ
-        if (shop.price) {
-            const parts = shop.price.split(' ');
-            if (parts.length >= 4) {
-                nextData.postal = parts[0];
-                nextData.prefecture = parts[1];
-                nextData.city = parts[2];
-                nextData.street = parts.slice(3).join(' ');
-            } else {
-                nextData.street = shop.price;
-            }
-        }
+        let nextData = { ...formData, title: shop.title };
+
+        nextData.prefecture = shop.prefecture || "";
+        nextData.city = shop.city || "";
+        nextData.street = shop.street || shop.price || "";
+        nextData.postal = shop.postal || "";
+
         if (shop.manager) {
-            const mParts = shop.manager.split(' ');
+            const mParts = shop.manager.split(/[\s　]+/);
             nextData.managerLast = mParts[0] || '';
             nextData.managerFirst = mParts[1] || '';
         }
         if (shop.managerKana) {
-            const mParts = shop.managerKana.split(' ');
+            const mParts = shop.managerKana.split(/[\s　]+/);
             nextData.managerLastKana = mParts[0] || '';
             nextData.managerFirstKana = mParts[1] || '';
         }
@@ -122,16 +125,21 @@ const CreateShopChat = () => {
         if (shop.phone) nextData.phone = shop.phone;
         if (shop.category) nextData.category = shop.category;
         if (shop.intro) nextData.description = shop.intro;
-        // （必要に応じて営業時間や設備なども復元してね！）
 
         setFormData(nextData);
-        setShowSuggestModal(false);
         setSuggestedShops([]);
+        setIsBotTyping(true);
 
-        // チャットにメッセージを出して、最後のステップに飛ばすよ
-        setMessages(prev => [...prev, { type: 'bot', text: '店舗情報を自動入力しました！内容を確認してね✨' }]);
-        const endIndex = SCENARIO.findIndex(s => s.key === 'end');
-        setStepIndex(endIndex);
+        setTimeout(() => {
+            setMessages(prev => [
+                ...prev,
+                { type: 'user', text: shop.title },
+                { type: 'bot', text: `「${shop.title}」の情報を自動入力したよ！✨\n引き続き、足りない項目を教えてね！` }
+            ]);
+
+            const nextIndex = SCENARIO.findIndex(s => s.key === 'manager_kanji');
+            findNextValidScenario(nextIndex, nextData);
+        }, 600);
     };
 
     const [formData, setFormData] = useState({
@@ -148,8 +156,6 @@ const CreateShopChat = () => {
     const [inputText, setInputText] = useState("");
     const [activeTab, setActiveTab] = useState(0);
     const [isBotTyping, setIsBotTyping] = useState(false);
-
-    // AI関連のState
     const [isGenerating, setIsGenerating] = useState(false);
     const [aiResults, setAiResults] = useState(null);
 
@@ -168,6 +174,8 @@ const CreateShopChat = () => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isBotTyping, activeTab]);
 
+    // 🌟 修正ポイント①：悪さをしていた「勝手に進むタイマー」を完全に削除！
+    // 最初の2ステップ（挨拶）だけ自動で進めるようにしたよ！
     useEffect(() => {
         if (stepIndex < 2) {
             const timer = setTimeout(() => proceedToNextStep(), 1000);
@@ -176,27 +184,14 @@ const CreateShopChat = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stepIndex]);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            const currentScenario = SCENARIO[stepIndex];
-            if (currentScenario && checkIsFilled(currentScenario, formData)) {
-                proceedToNextStep(formData);
-            }
-        }, 1200);
-        return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formData, stepIndex]);
-
     const checkIsFilled = (scenario, data) => {
         if (!scenario.field) return false;
-
         if (scenario.field === 'manager_kanji') return !!(data.managerLast && data.managerFirst);
         if (scenario.field === 'manager_kana') return !!(data.managerLastKana && data.managerFirstKana);
         if (scenario.field === 'postal') return !!data.postal;
         if (scenario.field === 'street') return !!data.street;
         if (scenario.field === 'time') return !!(data.timeStartHour && data.timeEndHour);
         if (scenario.field === 'contact_check') return !!(data.email || data.phone);
-
         return !!data[scenario.field];
     };
 
@@ -211,12 +206,14 @@ const CreateShopChat = () => {
     };
 
     const proceedToNextStep = (latestFormData = formData) => {
+        if (modalOpenRef.current) return;
         const nextIndex = stepIndex + 1;
         if (nextIndex >= SCENARIO.length) return;
         findNextValidScenario(nextIndex, latestFormData);
     };
 
     const findNextValidScenario = (startIndex, latestFormData) => {
+        if (modalOpenRef.current) return;
         let index = startIndex;
         const newMessagesToAdd = [];
 
@@ -236,7 +233,6 @@ const CreateShopChat = () => {
                 index++;
                 continue;
             }
-
             break;
         }
 
@@ -252,7 +248,6 @@ const CreateShopChat = () => {
             setTimeout(() => {
                 setMessages(prev => {
                     let updatedMessages = [...prev];
-
                     newMessagesToAdd.forEach(userMsg => {
                         const last = updatedMessages[updatedMessages.length - 1];
                         if (!(last && last.type === 'user' && last.text === userMsg.text)) {
@@ -302,9 +297,17 @@ const CreateShopChat = () => {
 
         const currentScenario = SCENARIO[stepIndex];
         let nextData = { ...formData };
+        let isModalOpened = false;
 
         if (currentScenario && currentScenario.field) {
-            if (currentScenario.field === 'manager_kanji') {
+            if (currentScenario.field === 'title') {
+                isModalOpened = await searchExistingShop(value);
+                if (isModalOpened) {
+                    setPendingTitle(value);
+                } else {
+                    nextData.title = value;
+                }
+            } else if (currentScenario.field === 'manager_kanji') {
                 const parts = value.replace(/　/g, ' ').trim().split(/\s+/);
                 nextData.managerLast = parts[0] || value;
                 nextData.managerFirst = parts[1] || "";
@@ -330,16 +333,18 @@ const CreateShopChat = () => {
                 }
             } else {
                 nextData[currentScenario.field] = value;
-                // 🌟店舗名(title)が入力されたら検索をかける！🌟
-                if (currentScenario.field === 'title') {
-                    searchExistingShop(value);
-                }
             }
-            setFormData(nextData);
+
+            if (!isModalOpened) {
+                setFormData(nextData);
+            }
         }
 
         setIsBotTyping(false);
-        setTimeout(() => proceedToNextStep(nextData), 500);
+
+        if (!isModalOpened) {
+            setTimeout(() => proceedToNextStep(nextData), 500);
+        }
     };
 
     const handleFormChange = (e) => {
@@ -355,13 +360,31 @@ const CreateShopChat = () => {
         }
     };
 
-    const handleFormBlur = (e) => {
-        // 🌟フォーム側でもタイトル入力後に検索をかけるよ🌟
-        const { name, value } = e.target;
-        if (name === 'title' && value) {
-            searchExistingShop(value);
+    // 🌟 修正ポイント②：フォームで「Enter」を押した時に、きれいに検索（サジェスト）を出す魔法！
+    const handleFormKeyDown = (e) => {
+        if (e.nativeEvent.isComposing) return; // 変換中は無視！
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 勝手に他のボタンが押されるのを防ぐ！
+            e.target.blur(); // 入力を確定させて、下の handleFormBlur を発動させる！
         }
+    };
+
+    const handleFormBlur = async (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'title' && value) {
+            setIsBotTyping(true);
+            const isModalOpened = await searchExistingShop(value);
+            setIsBotTyping(false);
+
+            if (isModalOpened) {
+                setPendingTitle(value);
+                return;
+            }
+        }
+
         const currentScenario = SCENARIO[stepIndex];
+        // 🌟 修正ポイント③：ちゃんと今の質問の項目が埋まっている時だけ進むようにしたよ！
         if (currentScenario && checkIsFilled(currentScenario, formData)) {
             proceedToNextStep(formData);
         }
@@ -378,7 +401,6 @@ const CreateShopChat = () => {
         }
     };
 
-    // ★修正ポイント: URLを確実な相対パス(/api/enhance-shop)に変更！
     const handleAiSuggest = async (e) => {
         e.preventDefault();
         setIsGenerating(true);
@@ -387,22 +409,19 @@ const CreateShopChat = () => {
             const dataToSubmit = new FormData();
             dataToSubmit.append("description", formData.description || `店舗名: ${formData.title}, 業態: ${formData.category} の紹介文を書いてください。`);
 
-            // 環境変数の未定義エラーを防ぐため相対パスに固定
             const res = await fetch(`/api/enhance-shop`, {
                 method: "POST",
                 body: dataToSubmit
             });
 
             if (!res.ok) {
-                const errText = await res.text();
-                console.error("API Error:", errText);
+                console.error("API Error:", await res.text());
                 alert("AIの提案に失敗しました。");
                 setIsGenerating(false);
                 return;
             }
 
             const json = await res.json();
-
             if (json.descs) {
                 setAiResults(json.descs);
                 setMessages(prev => [...prev, { type: 'bot', text: 'AIが紹介文を提案しました！右側のフォームを確認してください✨' }]);
@@ -422,12 +441,10 @@ const CreateShopChat = () => {
 
     const handleSelectAiSuggestion = (text) => {
         setFormData(prev => ({ ...prev, description: text }));
-        // チャット側にも「AIの提案を採用した」と流す
         setMessages(prev => [...prev, { type: 'user', text: "AIの提案を採用しました" }]);
-        handleFormBlur();
+        handleFormBlur({ target: { name: 'description', value: text } });
     };
 
-    // ★修正ポイント: URLを確実な相対パス(/api/item/create)に変更！
     const handleSubmit = async () => {
         if (!confirm("入力内容で登録しますか？")) return;
         try {
@@ -485,7 +502,6 @@ const CreateShopChat = () => {
     return (
         <div className={styles.container} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
 
-            {/* --- 左：チャット --- */}
             <div className={`${styles.chatSection} ${activeTab !== 0 ? styles.hiddenOnMobile : ''}`}>
                 <div className={styles.chatBackground}>
                     {messages.map((msg, index) => (
@@ -540,14 +556,22 @@ const CreateShopChat = () => {
                 )}
             </div>
 
-            {/* --- 右：フォーム --- */}
             <div className={`${styles.formSection} ${activeTab !== 1 ? styles.hiddenOnMobile : ''}`}>
                 <div className={styles.formHeader}>店舗情報の入力</div>
                 <div className={styles.formContent}>
 
                     <div className={styles.formGroup}>
                         <label className={styles.label}>店舗名<span className={styles.tagRequired}>必須</span></label>
-                        <input name="title" className={styles.input} value={formData.title} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="お店の名前を入力してください" />
+                        {/* 🌟 修正ポイント④：店名の入力欄に onKeyDown を追加！ */}
+                        <input
+                            name="title"
+                            className={styles.input}
+                            value={formData.title}
+                            onChange={handleFormChange}
+                            onBlur={handleFormBlur}
+                            onKeyDown={handleFormKeyDown}
+                            placeholder="お店の名前を入力してください"
+                        />
                     </div>
 
                     <div className={styles.formGroup}>
@@ -555,21 +579,21 @@ const CreateShopChat = () => {
                         <div className={styles.row}>
                             <div className={styles.col}>
                                 <span className={styles.subLabel}>姓</span>
-                                <input name="managerLast" className={styles.input} value={formData.managerLast} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="山田" />
+                                <input name="managerLast" className={styles.input} value={formData.managerLast} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="山田" />
                             </div>
                             <div className={styles.col}>
                                 <span className={styles.subLabel}>名</span>
-                                <input name="managerFirst" className={styles.input} value={formData.managerFirst} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="太郎" />
+                                <input name="managerFirst" className={styles.input} value={formData.managerFirst} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="太郎" />
                             </div>
                         </div>
                         <div className={styles.row} style={{ marginTop: '10px' }}>
                             <div className={styles.col}>
                                 <span className={styles.subLabel}>セイ</span>
-                                <input name="managerLastKana" className={styles.input} value={formData.managerLastKana} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="ヤマダ" />
+                                <input name="managerLastKana" className={styles.input} value={formData.managerLastKana} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="ヤマダ" />
                             </div>
                             <div className={styles.col}>
                                 <span className={styles.subLabel}>メイ</span>
-                                <input name="managerFirstKana" className={styles.input} value={formData.managerFirstKana} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="タロウ" />
+                                <input name="managerFirstKana" className={styles.input} value={formData.managerFirstKana} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="タロウ" />
                             </div>
                         </div>
                     </div>
@@ -577,36 +601,36 @@ const CreateShopChat = () => {
                     <div className={styles.formGroup}>
                         <label className={styles.label}>お問い合わせ先<span className={styles.tagOptional}>任意</span></label>
                         <span className={styles.subLabel}>メールアドレス</span>
-                        <input name="email" className={styles.input} value={formData.email} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="example@gmail.com" />
+                        <input name="email" className={styles.input} value={formData.email} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="example@gmail.com" />
                         <span className={styles.subLabel} style={{ marginTop: '10px' }}>電話番号（ハイフンなし）</span>
-                        <input name="phone" className={styles.input} value={formData.phone} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="09012345678" />
+                        <input name="phone" className={styles.input} value={formData.phone} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="09012345678" />
                     </div>
 
                     <div className={styles.formGroup}>
                         <label className={styles.label}>住所<span className={styles.tagRequired}>必須</span></label>
                         <span className={styles.subLabel}>郵便番号（ハイフンなし）</span>
                         <div className={styles.postalRow}>
-                            <input name="postal" className={`${styles.input} ${styles.inputPostal}`} value={formData.postal} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="1234567" />
+                            <input name="postal" className={`${styles.input} ${styles.inputPostal}`} value={formData.postal} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="1234567" />
                             <button className={styles.addressBtn} onClick={handleAddressSearch}>住所検索</button>
                         </div>
 
                         <span className={styles.subLabel} style={{ marginTop: '10px' }}>都道府県</span>
-                        <input name="prefecture" className={styles.input} style={{ width: '150px' }} value={formData.prefecture} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="北海道" />
+                        <input name="prefecture" className={styles.input} style={{ width: '150px' }} value={formData.prefecture} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="北海道" />
 
                         <span className={styles.subLabel} style={{ marginTop: '10px' }}>市区町村</span>
-                        <input name="city" className={styles.input} value={formData.city} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="○○市○○区○○町" />
+                        <input name="city" className={styles.input} value={formData.city} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="○○市○○区○○町" />
 
                         <span className={styles.subLabel} style={{ marginTop: '10px' }}>番地・建物名・部屋番号</span>
-                        <input name="street" className={styles.input} value={formData.street} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="1-2-1 パークハイツ 101号室" />
+                        <input name="street" className={styles.input} value={formData.street} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="1-2-1 パークハイツ 101号室" />
                     </div>
 
                     <div className={styles.formGroup}>
                         <label className={styles.label}>営業時間 <span style={{ fontSize: '10px', color: 'red', fontWeight: 'normal', marginLeft: '5px' }}>※上下にスクロールしてください</span></label>
                         <div className={styles.timeRow}>
-                            <input name="timeStartHour" className={styles.inputTime} value={formData.timeStartHour} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="00" /> ：
-                            <input name="timeStartMin" className={styles.inputTime} value={formData.timeStartMin} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="00" /> ～
-                            <input name="timeEndHour" className={styles.inputTime} value={formData.timeEndHour} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="00" /> ：
-                            <input name="timeEndMin" className={styles.inputTime} value={formData.timeEndMin} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="00" />
+                            <input name="timeStartHour" className={styles.inputTime} value={formData.timeStartHour} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="00" /> ：
+                            <input name="timeStartMin" className={styles.inputTime} value={formData.timeStartMin} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="00" /> ～
+                            <input name="timeEndHour" className={styles.inputTime} value={formData.timeEndHour} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="00" /> ：
+                            <input name="timeEndMin" className={styles.inputTime} value={formData.timeEndMin} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="00" />
                         </div>
                     </div>
 
@@ -625,9 +649,9 @@ const CreateShopChat = () => {
                     <div className={styles.formGroup}>
                         <label className={styles.label}>アクセス方法</label>
                         <span className={styles.subLabel}>最寄り駅</span>
-                        <input name="access_station" className={styles.input} value={formData.access_station} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="○○駅" />
+                        <input name="access_station" className={styles.input} value={formData.access_station} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="○○駅" />
                         <span className={styles.subLabel} style={{ marginTop: '10px' }}>最寄りバス停</span>
-                        <input name="access_bus" className={styles.input} value={formData.access_bus} onChange={handleFormChange} onBlur={handleFormBlur} placeholder="○○町1丁目バス停" />
+                        <input name="access_bus" className={styles.input} value={formData.access_bus} onChange={handleFormChange} onBlur={handleFormBlur} onKeyDown={handleFormKeyDown} placeholder="○○町1丁目バス停" />
                     </div>
 
                     <div className={styles.formGroup}>
@@ -667,11 +691,8 @@ const CreateShopChat = () => {
                         </div>
                     </div>
 
-                    {/* --- あなたのお店を紹介してください！エリア --- */}
                     <div className={styles.formGroup}>
                         <div className={styles.introSectionWrapper}>
-
-                            {/* 左側：入力とボタン */}
                             <div className={styles.introLeft}>
                                 <label className={styles.label}>あなたのお店を紹介してください！</label>
 
@@ -688,7 +709,6 @@ const CreateShopChat = () => {
                                     <span className={styles.charCount}>現在 {formData.description.length} 文字</span>
                                 </div>
 
-                                {/* AI提案ボタン (点線枠デザイン) */}
                                 <button
                                     className={styles.aiButton}
                                     onClick={handleAiSuggest}
@@ -698,7 +718,6 @@ const CreateShopChat = () => {
                                 </button>
                             </div>
 
-                            {/* 右側：AI提案結果エリア (緑枠デザイン) */}
                             {aiResults && (
                                 <div className={styles.introRight}>
                                     <div className={styles.suggestionMainTitle}>AIからの提案候補</div>
@@ -732,7 +751,6 @@ const CreateShopChat = () => {
                             )}
                         </div>
                     </div>
-                    {/* ---------------------------------------------- */}
 
                     <button className={styles.submitButton} onClick={handleSubmit}>
                         登録内容を確定させる
@@ -758,7 +776,7 @@ const CreateShopChat = () => {
                     )}
                 </div>
             </div>
-            {/* 🌟ここから「もしかして？」のモーダル🌟 */}
+
             {showSuggestModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
@@ -775,7 +793,17 @@ const CreateShopChat = () => {
                                 </div>
                             ))}
                         </div>
-                        <button className={styles.closeButton} onClick={() => setShowSuggestModal(false)}>
+                        <button className={styles.closeButton} onClick={() => {
+                            setShowSuggestModal(false);
+                            modalOpenRef.current = false;
+
+                            const nextData = { ...formData, title: pendingTitle };
+                            setFormData(nextData);
+
+                            setTimeout(() => {
+                                proceedToNextStep(nextData);
+                            }, 300);
+                        }}>
                             違うので新しく登録する
                         </button>
                     </div>
