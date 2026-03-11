@@ -1,7 +1,66 @@
-# 『動かして学ぶ！Next.js/React開発入門（翔泳社／三好アキ著）』コード
+# hokkaido-gibier-f
+船木さんがデザインしたUIを搭載したもの
 
-## *追加情報（最終更新日：2025年3月9日）
+対話型とフォーム形式をスワイプやボタンで切り替え
+登録しようとした店名で、すでにあるお店を自動検索（サジェスト機能）＊調整中
 
-Next.jsの新しいバージョン（15）の変更点等について：https://monotein-books.netlify.app/nextjs-react-book-additional-info-1
+# 🪄 AIサポート機能 (/api/enhance-shop)
+説明文のトーン補正: お店の紹介文をAIが「通常」「高級感」「カジュアル（庶民的）」の3パターンで添削提案してくれる
+```
+ app/
+ ├── api/                 # APIルート（バックエンド処理）
+ │   ├── auth/me/         # ログイン状態の確認
+ │   ├── enhance-shop/    # AIによるテキスト・画像補正API
+ │   ├── item/            # アイテム(店舗)のCRUD・検索API
+ │   └── user/            # ユーザー登録・ログインAPI
+ ├── components/          # 共通パーツ（ヘッダー・フッター・画像アップロードなど）
+ ├── dashboard/           # マイページ・ダッシュボード
+ ├── item/                # メニュー等のアイテム管理画面
+ ├── shop/                # 🌟 店舗情報登録画面
+ │   ├── create/          # 店舗の新規登録画面
+ │   │   ├── page.js      # チャット入力とフォーム入力が切り替えられる超リッチなUI！AIの紹介文提案や、既存店舗の自動サジェスト機能もここに入ってる
+ │   │   ├── chat-style.module.css   # チャットUI用のスタイル
+ │   │   ├── shop-create.module.css  # フォームUI用のスタイル
+ │   │   └── enhance_unused/ # (※AI補正　現在これは使っていない)
+ │   ├── readsingle/[id]/ # 店舗の詳細表示画面
+ │   ├── update/[id]/     # 店舗情報の編集（更新）画面
+ │   └── delete/[id]/     # 店舗情報の削除画面
+ ├── user/                # ログイン・会員登録画面
+ └── utils/               # DB接続設定やMongooseスキーマ、認証用カスタムフック
+```
 
-Reactサーバーコンポーネントのわかりやすい解説：https://monotein.com/blog/react-server-components-complete-guide
+
+# 💡 主要ロジックの解説： app/shop/create/page.js
+店舗登録画面は多機能なため、主要なロジックの動作仕様を以下にまとめます。開発時の参考にしてください。
+
+## 1. チャットとフォームのシームレスなUI切り替え
+
+- State管理: activeTab というStateで「0: チャット」「1: フォーム」の表示状態を管理しています。
+
+- スワイプ対応: モバイル端末向けに onTouchStart, onTouchMove, onTouchEnd イベントを活用し、左右スワイプでの画面切り替えを実現しています。
+
+## 2. SCENARIOベースのチャット進行ロジック
+
+- シナリオ配列: ファイル上部の SCENARIO 配列にて、ボットのテキスト(text)、入力項目(field)、選択肢(options)を定義しています。
+
+- 進行管理: skipCondition による条件分岐や、フォーム側での入力済み項目判定 (checkIsFilled) を行い、不要な質問をスキップします。チャットとフォームのデータは常に同期されます。
+
+## 3. 自動入力およびサジェスト機能
+
+- 郵便番号からの住所検索: fetchAddress 関数にて zipcloud APIを呼び出し、郵便番号から「都道府県」「市区町村」を自動入力します。
+
+- 既存店舗のサジェスト機能: 店舗名 (title) の入力時（チャット送信時やフォームのフォーカスアウト時）に、/api/item/search を呼び出します。類似店舗が見つかった場合はモーダル (showSuggestModal) を表示し、選択されると該当店舗の情報を formData に自動で反映します。(調整中)
+
+## 4. AIによる紹介文の自動提案 (handleAiSuggest)
+
+- AI提案ボタンを押下すると、入力中の店舗名や業態 (category)、入力途中の文章を FormData に格納し、/api/enhance-shop エンドポイントへ送信します。
+
+- APIから返却された「通常・カジュアル・高級感」の3パターンの結果 (aiResults) をUIに表示し、クリックでテキストエリアに採用 (handleSelectAiSuggestion) することが可能です。
+
+## 5. データの整形とDB保存 (handleSubmit)
+
+- DBのスキーマ構造に合わせるため、住所の各パーツや管理者名（姓・名）などを保存直前に結合・整形しています。
+
+- 営業時間やアクセシビリティなどの詳細情報はJSON形式にまとめ、DBの description フィールドに文字列として格納する設計です。
+
+- 最後に /api/item/create に対し、JWTトークン (Authorization: Bearer ...) を付与してPOSTリクエストを送信し、登録を完了します。
