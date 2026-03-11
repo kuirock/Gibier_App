@@ -1,0 +1,688 @@
+/* app/shop/create/chat-style.module.css */
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* PC向け：横並び */
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    font-family: "Noto Sans JP", sans-serif;
+    touch-action: pan-y;
+}
+
+/* --- チャットエリア（左側） --- */
+.chatSection {
+    flex: 1;
+    /* PCで半分の幅を占める */
+    background-color: #79C07E;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    border-right: 1px solid #5aa35f;
+    /* PC時の区切り線 */
+}
+
+.chatBackground {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.messageRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 100%;
+    flex-shrink: 0;
+}
+
+.botRow {
+    justify-content: flex-start;
+}
+
+.userRow {
+    justify-content: flex-end;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #D06B89;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.bubble {
+    max-width: 85%;
+    padding: 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    word-break: break-word;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.botBubble {
+    background: #fff;
+    color: #333;
+    border-top-left-radius: 4px;
+}
+
+.userBubble {
+    background: #005C42;
+    color: #fff;
+    border-top-right-radius: 4px;
+    font-weight: bold;
+}
+
+/* 選択肢ボタン */
+.choiceGroup {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.choiceButton {
+    background-color: #005C42;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.choiceButton:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+.choiceButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* チャット入力エリア */
+.inputArea {
+    width: 100%;
+    padding: 15px;
+    background-color: #79C07E;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+.inputWrapper {
+    display: flex;
+    gap: 10px;
+    background: #005C42;
+    padding: 8px 20px;
+    border-radius: 30px;
+    align-items: center;
+}
+
+.chatInput {
+    flex: 1;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-weight: bold;
+}
+
+.chatInput::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: normal;
+}
+
+.sendButton {
+    background: white;
+    color: #005C42;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.sendButton:disabled {
+    background: #ccc;
+    color: #fff;
+}
+
+
+/* --- 右側フォームエリア --- */
+.formSection {
+    flex: 1;
+    /* PCで半分の幅を占める */
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.formHeader {
+    background: #8b3a3a;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.formContent {
+    padding: 30px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.tagRequired {
+    background: #ff4d4f;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.tagOptional {
+    background: #999;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.input,
+.textarea,
+.select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background: #fff;
+}
+
+.textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.col {
+    flex: 1;
+}
+
+.subLabel {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.postalRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputPostal {
+    width: 120px;
+}
+
+.addressBtn {
+    background-color: #8b3a3a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.timeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.inputTime {
+    width: 60px;
+    text-align: center;
+    padding: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 20px;
+    margin-top: 5px;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.radioLabel input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #333;
+}
+
+.charCount {
+    text-align: right;
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.errorText {
+    color: #ff4d4f;
+    font-size: 11px;
+    float: left;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 15px;
+    background: #8b3a3a;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.saveButton {
+    width: 100%;
+    padding: 15px;
+    background: white;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #333;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+/* ==========================================================================
+   AIボタン＆提案エリア（画像デザイン再現・横並びレイアウト）
+   ========================================================================== */
+
+/* 全体の横並びラッパー */
+.introSectionWrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* 左側（入力とボタン） */
+.introLeft {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 右側（提案結果） */
+.introRight {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* AI提案ボタン (点線枠・薄緑背景) */
+.aiButton {
+    background-color: #f4fdf4;
+    /* 非常に薄い緑 */
+    color: #005c42;
+    /* 濃い緑 */
+    border: 2px dashed #005c42;
+    /* 濃い緑の点線 */
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.aiButton:hover {
+    background-color: #e6f7e8;
+}
+
+.aiButton:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* タイトル「AIからの提案候補」 */
+.suggestionMainTitle {
+    color: #4CAF50;
+    /* 明るい緑 */
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* 提案を囲む緑の枠 */
+.aiSuggestionBox {
+    background-color: #ffffff;
+    border: 2px solid #63C166;
+    /* 画像に合わせた緑の実線 */
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* 説明文 */
+.suggestionDesc {
+    color: #666;
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* 各提案アイテム */
+.suggestionItem {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.suggestionItem:hover {
+    background-color: #f9f9f9;
+}
+
+.suggestionItem strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #000;
+    font-size: 15px;
+}
+
+/* 区切り線（点線） */
+.suggestionDivider {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 15px 0;
+}
+
+
+/* --- モバイル向けの下部ナビゲーション --- */
+.mobileNavContainer {
+    display: none;
+    /* PCでは非表示 */
+}
+
+.navigationBar {
+    display: flex;
+    height: 60px;
+    width: 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0;
+    /* 念のため親玉にもゼロを指定！ */
+}
+
+.navButtonRed {
+    flex: 1;
+    background: linear-gradient(to right, #ff719a, #ffc07e);
+    color: white;
+    border: none;
+    border-radius: 0;
+    /* ここが重要！強制的に直角にするよ！ */
+    -webkit-appearance: none;
+    appearance: none;
+    /* スマホ特有の勝手な丸みをリセット！ */
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    /* 余計な隙間も消す！ */
+    padding: 0;
+}
+
+.navButtonWhite {
+    flex: 2;
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 0;
+    /* こっちも強制直角！ */
+    -webkit-appearance: none;
+    appearance: none;
+    /* スマホ特有の勝手な丸みをリセット！ */
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    /* 余計な隙間も消す！ */
+    padding: 0;
+}
+
+.arrowIcon {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    /* 矢印との隙間をいい感じに！ */
+}
+
+
+/* --- レスポンシブ (スマホ向け) --- */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        /* スマホは縦並び */
+    }
+
+    .hiddenOnMobile {
+        display: none !important;
+    }
+
+    .chatSection,
+    .formSection {
+        width: 100%;
+        height: 100%;
+        border-right: none;
+        padding-bottom: 50px;
+    }
+
+    .mobileNavContainer {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 100;
+    }
+
+    /* 🌟ここからAI提案エリアのスマホ対応🌟 */
+    .introSectionWrapper {
+        flex-direction: column;
+        /* スマホでは縦並びに */
+        gap: 15px;
+        width: 100%;
+        box-sizing: border-box;
+        /* はみ出し防止！ */
+    }
+
+    .introLeft,
+    .introRight {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .aiSuggestionBox {
+        padding: 15px;
+        /* スマホだと余白大きすぎるとはみ出るから少し小さく！ */
+        box-sizing: border-box;
+    }
+}
+
+/* --- サジェストモーダル用 --- */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modalContent {
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modalTitle {
+    color: #005C42;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.modalDesc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.suggestList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.suggestItem {
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.suggestItem:hover {
+    background: #f4fdf4;
+    border-color: #63C166;
+}
+
+.suggestItem h4 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.suggestItem p {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.closeButton {
+    width: 100%;
+    padding: 14px;
+    background: #f0f0f0;
+    color: #555;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.closeButton:hover {
+    opacity: 0.8;
+}

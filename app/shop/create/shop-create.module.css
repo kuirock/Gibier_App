@@ -1,0 +1,336 @@
+/* ベースコンテナ */
+.container {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: #ffffff;
+    font-family: "Noto Sans JP", sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: #333;
+}
+
+/* ヘッダー */
+.header {
+    background-color: #8b3a3a;
+    /* えんじ色 */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+/* コンテンツエリア */
+.content {
+    padding: 24px;
+    flex: 1;
+    padding-bottom: 40px;
+}
+
+/* ステップバー */
+.stepBox {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    background: white;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.stepCircle {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #6ec05e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6ec05e;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.stepText h2 {
+    font-size: 16px;
+    margin: 0 0 4px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.stepText p {
+    font-size: 11px;
+    color: #888;
+    margin: 0;
+}
+
+/* フォーム要素 */
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.required {
+    background: #ff4d4f;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.any {
+    background: #999;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.input:focus {
+    outline: 2px solid #8b3a3a;
+}
+
+.textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+}
+
+/* 名前入力（姓・名） */
+.nameRow {
+    display: flex;
+    gap: 10px;
+}
+
+.nameCol {
+    flex: 1;
+}
+
+/* 時間入力 */
+.timeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeInput {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 画像アップロードエリア */
+.imageUploadBox {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #fafafa;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.uploadLabel {
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+}
+
+/* AIボタン */
+.aiButton {
+    background-color: #6ec05e;
+    /* 緑色 */
+    color: white;
+    border: none;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.3s;
+}
+
+.aiButton:hover {
+    opacity: 0.9;
+}
+
+/* AI提案エリア */
+.aiSuggestionBox {
+    background-color: #f0fdf4;
+    border: 1px solid #6ec05e;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.suggestionTitle {
+    font-weight: bold;
+    color: #2f855a;
+    margin-bottom: 10px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.suggestionItem {
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.suggestionItem strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+/* ボタン類 */
+.primaryButton {
+    background-color: #8b3a3a;
+    color: white;
+    border: none;
+    padding: 16px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.secondaryButton {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 15px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+/* 確認画面用 */
+.confirmSection {
+    margin-bottom: 30px;
+}
+
+.confirmHeader {
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.confirmRow {
+    margin-bottom: 16px;
+}
+
+.confirmLabel {
+    font-size: 11px;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.confirmValue {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.editButton {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto 30px auto;
+}
+
+/* 完了画面 */
+.completeMessage {
+    text-align: center;
+    margin: 60px 0;
+}
+
+.completeTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: #333;
+}

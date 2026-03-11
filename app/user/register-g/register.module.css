@@ -1,0 +1,364 @@
+/* ベースのコンテナ */
+.container {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: #ffffff;
+    font-family: "Noto Sans JP", sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* --- TOP画面 --- */
+.topScreen {
+    background-color: #8b3a3a;
+    color: white;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.topContent {
+    z-index: 1;
+    margin-top: auto;
+    width: 100%;
+}
+
+.circleDeco {
+    width: 200px;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 100px;
+    left: -50px;
+}
+
+.topTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    z-index: 1;
+    line-height: 1.4;
+}
+
+.topDesc {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 60px;
+    z-index: 1;
+    opacity: 0.9;
+}
+
+.whiteButton {
+    background-color: white;
+    color: #8b3a3a;
+    border: none;
+    padding: 16px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s;
+}
+
+.whiteButton:hover {
+    opacity: 0.9;
+}
+
+/* --- ヘッダー --- */
+.header {
+    background-color: #8b3a3a;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    width: 40px;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border-radius: 50%;
+    color: #8b3a3a;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+/* --- コンテンツエリア --- */
+.content {
+    padding: 24px;
+    flex: 1;
+    color: #333;
+}
+
+/* ステップバー */
+.stepBox {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    background: white;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.stepCircle {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #6ec05e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6ec05e;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* 完了画面などで緑色にする用 */
+.stepCircleComplete {
+    border-color: #6ec05e;
+    color: #6ec05e;
+}
+
+.stepText h2 {
+    font-size: 16px;
+    margin: 0 0 4px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.stepText p {
+    font-size: 11px;
+    color: #888;
+    margin: 0;
+}
+
+/* フォーム要素 */
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.termsGroup {
+    margin-top: 40px;
+}
+
+.termsNote {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.required {
+    background: #ff4d4f;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background: #fff;
+}
+
+.input:focus {
+    outline: 2px solid #8b3a3a;
+}
+
+/* パスワード表示スイッチ（左寄せ・1行固定） */
+.passwordToggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.passwordToggle label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    /* 改行禁止 */
+}
+
+.passwordToggle input[type="checkbox"] {
+    width: auto;
+    margin: 0 8px 0 0;
+    transform: scale(1.1);
+}
+
+.note {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    list-style: none;
+    padding-left: 0;
+    line-height: 1.5;
+}
+
+.note li::before {
+    content: "○ ";
+    color: #999;
+}
+
+/* 規約エリア */
+.termsBox {
+    height: 120px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    overflow-y: scroll;
+    font-size: 11px;
+    background: #f9f9f9;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+    color: #555;
+}
+
+/* 同意チェックボックス（中央寄せ・1行固定） */
+.agreeCheck {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.agreeCheck label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    /* 改行禁止 */
+}
+
+.agreeCheck input[type="checkbox"] {
+    width: auto;
+    margin: 0 8px 0 0;
+    transform: scale(1.2);
+}
+
+/* ボタン */
+.primaryButton {
+    background-color: #8b3a3a;
+    color: white;
+    border: none;
+    padding: 16px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: opacity 0.3s;
+}
+
+.primaryButton:hover {
+    opacity: 0.9;
+}
+
+/* 無効時のボタン（半透明） */
+.buttonDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.secondaryButton {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 15px 0;
+    width: 100%;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+/* 確認画面用 */
+.confirmRow {
+    margin-bottom: 24px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+}
+
+.confirmLabel {
+    font-size: 12px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.confirmValue {
+    font-size: 16px;
+    color: #333;
+}
+
+/* 完了画面 */
+.completeMessage {
+    text-align: center;
+    margin: 60px 0;
+}
+
+.completeTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+.completeMainText {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #333;
+}
+
+.completeSubText {
+    font-size: 12px;
+    margin-top: 20px;
+    color: #666;
+}
