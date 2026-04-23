@@ -248,3 +248,522 @@ footer {
     font-size: 1.6rem;
     display: inline-block;
 }
+
+/* ==========================================================================
+   新しいトップページ用のデザイン
+   ========================================================================== */
+.home-container {
+    background-color: #fdf8f0;
+    min-height: 100vh;
+    color: #333;
+    padding-bottom: 60px;
+}
+
+.home-heroSection {
+    background: linear-gradient(to bottom, #7a3030, #9b4b4b);
+    color: white;
+    padding: 40px 20px 60px;
+    text-align: center;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.home-heroTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.home-heroSubtitle {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.home-searchForm {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.home-searchLabel {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.home-searchInputWrapper {
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-bottom: 15px;
+}
+
+.home-searchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.home-searchBtn {
+    background-color: #4cdfe1;
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 4px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.home-locationText {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.home-locationButton {
+    display: block;
+    background-color: #4cdfe1;
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.home-aiSection {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.home-aiText {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.home-aiButton {
+    display: inline-block;
+    background-color: #4cdfe1;
+    color: white;
+    font-weight: bold;
+    padding: 20px 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    position: relative;
+}
+
+.home-aiButton::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: #4cdfe1 transparent transparent transparent;
+}
+
+.home-categorySection {
+    padding: 20px;
+}
+
+.home-sectionTitle {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.home-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.home-imagePlaceholder {
+    width: 100%;
+    height: 120px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.home-color1 {
+    background-color: #a06b6b;
+}
+
+.home-color2 {
+    background-color: #b5857c;
+}
+
+.home-color3 {
+    background-color: #8c5656;
+}
+
+.home-color4 {
+    background-color: #907474;
+}
+
+.home-color5 {
+    background-color: #7a6363;
+}
+
+.home-cardDesc {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.home-recommendList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.home-recommendCard {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.home-dummyImg {
+    width: 100%;
+    height: 150px;
+    background-color: #d1bfae;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   検索結果ページ用のデザイン
+   ========================================================================== */
+.search-page-container {
+    background-color: #fdf8f0;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.search-header {
+    background-color: #8b3a3a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+}
+
+.search-backButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    margin-bottom: 0;
+}
+
+.search-pageTitle {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.search-menuButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    margin-bottom: 0;
+}
+
+.search-barContainer {
+    padding: 20px;
+}
+
+.search-inputWrapper {
+    display: flex;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 15px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.search-gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 0 20px;
+}
+
+.search-gridItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-dummyImage {
+    background-color: #a07a7a;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 8px;
+}
+
+.search-itemText {
+    font-size: 12px;
+    color: #333;
+}
+
+/* ==========================================================================
+   AI提案チャットページ用のデザイン（修正版✨）
+   ========================================================================== */
+.ai-chat-container {
+    background-color: #fdf8f0;
+    /* 全体のベージュ背景 */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 🌟ヘッダー周りの修正 */
+/* 🌟ヘッダー周りの修正 */
+.ai-chat-header {
+    background-color: #3fcedb;
+    color: #8b3a3a;
+    display: flex;
+    align-items: center;
+    /* 👈 ここで縦のズレをなくして一直線にする！ */
+    justify-content: space-between;
+    /* 👈 左右にピタッと分ける！ */
+    padding: 0 20px;
+    height: 60px;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.ai-chat-backButton {
+    background-color: #8b3a3a;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    line-height: 1;
+    /* 矢印を少し見やすく */
+    cursor: pointer;
+    margin: 0;
+    padding: 0 0 3px 0;
+    flex-shrink: 0;
+    z-index: 2;
+    /* 👈 タイトルより前に出して押しやすくする */
+}
+
+.ai-chat-title {
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* 👈 上からも50%の位置に */
+    transform: translate(-50%, -50%);
+    /* 👈 これで縦も横も完全にど真ん中！ */
+    white-space: nowrap;
+    margin: 0;
+    z-index: 1;
+}
+
+.ai-chat-menuButton {
+    background: none;
+    border: none;
+    color: #8b3a3a;
+    font-size: 28px;
+    /* 👈 画像みたいにハンバーガーを大きめに！ */
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    z-index: 2;
+    /* 👈 これも前に出す */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0.5;
+    /* 👈 アイコンの上下の無駄な隙間をなくす魔法 */
+}
+
+/* 🌟チャットエリアと吹き出しの修正 */
+.ai-chat-messageArea {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ai-chat-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+}
+
+.ai-chat-row-ai {
+    align-self: flex-start;
+}
+
+.ai-chat-row-user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.ai-chat-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #d98282;
+    flex-shrink: 0;
+}
+
+.ai-chat-bubble-ai {
+    background-color: #3fcedb;
+    color: #333;
+    padding: 12px 18px;
+    /* 余白を少しスッキリ */
+    border-radius: 15px;
+    border-top-left-radius: 4px;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 80%;
+    /* 幅の最大値を設定 */
+    word-break: break-word;
+    /* はみ出し防止 */
+}
+
+.ai-chat-bubble-user {
+    background-color: #8b3a3a;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 15px;
+    border-top-right-radius: 4px;
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 75%;
+    word-break: break-word;
+}
+
+/* 🌟入力エリアの修正 */
+.ai-chat-inputArea {
+    /* iPhoneの下のバー（ホームインジケーター）にかぶらないように余白調整 */
+    padding: 12px 15px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background-color: #2c2c2c;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.ai-chat-input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background-color: #555;
+    color: white;
+    margin: 0;
+}
+
+.ai-chat-input::placeholder {
+    color: #aaa;
+}
+
+.ai-chat-sendBtn {
+    background-color: #3fcedb;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* 🌟 サジェストチップのスタイル */
+.ai-chat-suggestArea {
+    display: flex;
+    gap: 10px;
+    padding: 10px 15px;
+    overflow-x: auto;
+    background-color: #fdf8f0;
+    /* 背景色に合わせる */
+    /* スクロールバーを見えなくする魔法 */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.ai-chat-suggestArea::-webkit-scrollbar {
+    display: none;
+}
+
+.ai-chat-suggestChip {
+    background-color: white;
+    color: #8b3a3a;
+    border: 1px solid #8b3a3a;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+}
+
+.ai-chat-suggestChip:active {
+    background-color: #f0f0f0;
+}
+
+.ai-chat-suggestChip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
